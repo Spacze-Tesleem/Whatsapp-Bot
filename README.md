@@ -33,11 +33,41 @@ Six sample products are added on first run. Set `SEED_DEMO=false` to start empty
 2. In **WhatsApp → API Setup**, copy the **Phone number ID** and create a **permanent access token** (System User in Business Settings). Set:
    - `WHATSAPP_TOKEN`, `WHATSAPP_PHONE_NUMBER_ID`
 3. Choose a random string for `WHATSAPP_VERIFY_TOKEN`, and set `WHATSAPP_APP_SECRET` to the app secret (App settings → Basic). The app secret enables signature checks on incoming webhooks.
-4. Deploy the app somewhere with a public HTTPS URL (any Node host, VPS, Render, Railway, etc.). Your webhook URL is `https://YOUR-DOMAIN/webhook/whatsapp`.
+4. Deploy the app to a public HTTPS URL. See **Deploy on Render** below.
 5. In **WhatsApp → Configuration → Webhook**, set the callback URL to that address and the verify token to your `WHATSAPP_VERIFY_TOKEN`. Subscribe to the **messages** field.
 6. In the admin panel → **Settings**, enter your bank details and your own WhatsApp number (for order alerts).
 
 Note: Meta only allows free-form replies within 24 hours of a customer's last message. The bot always replies to customer messages, so this works. Order status updates sent outside that window need a Meta-approved template; the current code sends them as plain text.
+
+## Deploy on Render
+
+The repo includes a `render.yaml` Blueprint that sets up the web service, a persistent disk for the SQLite database, and health checks.
+
+1. Push this repo to GitHub (it already is).
+2. In Render, choose **New → Blueprint** and select this repository. Render reads `render.yaml`.
+3. When prompted, fill in the secret values:
+   - `ADMIN_PASSWORD`: a strong password for the admin panel
+   - `WHATSAPP_TOKEN` and `WHATSAPP_PHONE_NUMBER_ID`: from Meta (see below)
+   - `WHATSAPP_APP_SECRET`: from Meta (App settings → Basic)
+   - `WHATSAPP_VERIFY_TOKEN` is generated for you. Copy it from the Render dashboard for the Meta step.
+4. Wait for the first deploy. Check `https://YOUR-SERVICE.onrender.com/healthz`. It should return `{"ok":true,"whatsapp":"live"}`.
+5. Use `https://YOUR-SERVICE.onrender.com/webhook/whatsapp` as the webhook URL in Meta.
+
+Notes:
+- The `starter` plan is required for the persistent disk. Without it the database is wiped on every deploy.
+- `TRUST_PROXY=true` is already set, so admin login rate limits apply per real client IP.
+- Ensure the `/healthz` and `/webhook/whatsapp` routes are reachable, and don't add a login wall in front of them.
+
+## Connect your WhatsApp number (checklist)
+
+1. Create a Meta app at https://developers.facebook.com/apps (type: Business) and add the **WhatsApp** product.
+2. Add a WhatsApp Business phone number. It must not be registered to the WhatsApp or WhatsApp Business app on a phone.
+3. Create a permanent access token: Business Settings → System Users → Add → generate token with `whatsapp_business_messaging` and `whatsapp_business_management` permissions.
+4. Copy the **Phone number ID** (WhatsApp → API Setup) and set `WHATSAPP_PHONE_NUMBER_ID`, `WHATSAPP_TOKEN`, and `WHATSAPP_APP_SECRET` in Render.
+5. In WhatsApp → Configuration → Webhook, set the callback URL to `https://YOUR-SERVICE.onrender.com/webhook/whatsapp` and the verify token to the `WHATSAPP_VERIFY_TOKEN` value from Render. Click Verify and save.
+6. Under Webhook fields, subscribe to **messages**.
+7. Send a message to your business number from a phone. The bot should reply with the menu.
+8. In the admin panel → Settings, add your bank details and the admin WhatsApp number for order alerts.
 
 ## Customer bot commands
 

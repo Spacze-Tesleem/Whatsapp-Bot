@@ -30,6 +30,7 @@ function sha256(text) {
 function createApp({ store, whatsapp, config, logger = console }) {
   const app = express();
   app.disable('x-powered-by');
+  app.set('trust proxy', config.trustProxy ? 1 : false);
 
   const adminSessions = new Map(); // token -> expiresAt
 
@@ -76,6 +77,12 @@ function createApp({ store, whatsapp, config, logger = console }) {
     }
   }
   const bot = createBot({ store, onOrderCreated });
+
+  // ---------- Health check (used by hosting platforms) ----------
+
+  app.get('/healthz', (_req, res) => {
+    res.json({ ok: true, whatsapp: whatsapp.dryRun ? 'dry-run' : 'live' });
+  });
 
   // ---------- WhatsApp webhook ----------
 

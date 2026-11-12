@@ -121,3 +121,11 @@ test('an order cannot exceed available stock', () => {
   assert.throws(() => store.createOrder({ phone: PHONE, items: [{ productId: 3, qty: 99 }] }), /Only 8/);
   assert.equal(store.getProduct(3).stock, 8);
 });
+
+test('config warns when the webhook has no app secret', () => {
+  const { configWarnings } = require('../src/config');
+  const base = { adminPassword: 'x', whatsapp: { token: 't', verifyToken: 'v', appSecret: '' } };
+  assert.ok(configWarnings(base).some((w) => /APP_SECRET/.test(w)));
+  base.whatsapp.appSecret = 's';
+  assert.ok(!configWarnings(base).some((w) => /APP_SECRET/.test(w)));
+});

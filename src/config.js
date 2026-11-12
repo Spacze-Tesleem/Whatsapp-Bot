@@ -21,6 +21,8 @@ function loadConfig(env = process.env) {
       graphVersion: env.WHATSAPP_GRAPH_VERSION || 'v21.0',
     },
     seedDemo: bool(env.SEED_DEMO, true),
+    // Set TRUST_PROXY=true when running behind a load balancer (e.g. Render) so rate limits use the real client IP.
+    trustProxy: bool(env.TRUST_PROXY, false),
   };
 }
 
@@ -30,6 +32,7 @@ function configWarnings(config) {
   if (config.adminPassword === 'change-me') warnings.push('ADMIN_PASSWORD is the default; set a strong password.');
   if (config.whatsapp.verifyToken === 'change-me-verify') warnings.push('WHATSAPP_VERIFY_TOKEN is the default.');
   if (!config.whatsapp.token) warnings.push('WHATSAPP_TOKEN not set: running in dry-run mode (WhatsApp replies are logged, not sent).');
+  if (config.whatsapp.token && !config.whatsapp.appSecret) warnings.push('WHATSAPP_APP_SECRET not set: incoming webhook requests are not signature-checked.');
   return warnings;
 }
 

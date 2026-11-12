@@ -22,7 +22,7 @@ before(async () => {
   const store = createStore(openDatabase(':memory:'));
   store.seedDemoData();
   sent = [];
-  const whatsapp = { sendText: async (to, body) => { sent.push({ to, body }); } };
+  const whatsapp = { dryRun: true, sendText: async (to, body) => { sent.push({ to, body }); } };
   const { app } = createApp({ store, whatsapp, config: CONFIG, logger: { log() {}, error() {} } });
   server = app.listen(0, '127.0.0.1');
   await new Promise((r) => server.once('listening', r));
@@ -217,4 +217,10 @@ test('repeated failed logins are rate limited', async () => {
   let last;
   for (let i = 0; i < 11; i++) last = await json('POST', '/api/admin/login', { password: 'wrong' });
   assert.equal(last.status, 429);
+});
+
+test('health check reports dry-run mode when no WhatsApp token is set', async () => {
+  const res = await fetch(`${base}/healthz`);
+  assert.equal(res.status, 200);
+  assert.deepEqual(await res.json(), { ok: true, whatsapp: 'dry-run' });
 });
