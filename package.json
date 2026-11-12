@@ -1,0 +1,19 @@
+{
+  "name": "whatsapp-ecommerce-bot",
+  "version": "1.0.0",
+  "description": "WhatsApp ecommerce bot with a customer storefront and an admin panel",
+  "main": "src/index.js",
+  "private": true,
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "start": "node --disable-warning=ExperimentalWarning src/index.js",
+    "dev": "node --watch --disable-warning=ExperimentalWarning src/index.js",
+    "test": "node --test --no-warnings test/*.test.js"
+  },
+  "license": "UNLICENSED",
+  "dependencies": {
+    "express": "^4.22.3"
+  }
+}

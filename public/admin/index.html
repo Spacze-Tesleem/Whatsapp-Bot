@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin · WhatsApp Store</title>
+  <link rel="stylesheet" href="/admin/admin.css">
+</head>
+<body>
+  <!-- Login -->
+  <div id="login-screen" class="login-screen hidden">
+    <form id="login-form" class="login-card">
+      <h1>Admin sign in</h1>
+      <p class="muted">Enter the admin password set in your <code>ADMIN_PASSWORD</code> environment variable.</p>
+      <label>Password
+        <input type="password" name="password" autocomplete="current-password" required autofocus>
+      </label>
+      <p class="error" id="login-error"></p>
+      <button type="submit" class="btn primary block">Sign in</button>
+    </form>
+  </div>
+
+  <!-- App shell -->
+  <div id="app" class="app hidden">
+    <aside class="sidebar">
+      <div class="brand">🛒 <span id="brand-name">Store</span></div>
+      <nav>
+        <a href="#dashboard" data-route="dashboard">Dashboard</a>
+        <a href="#products" data-route="products">Products</a>
+        <a href="#orders" data-route="orders">Orders</a>
+        <a href="#customers" data-route="customers">Customers</a>
+        <a href="#messages" data-route="messages">WhatsApp inbox</a>
+        <a href="#simulator" data-route="simulator">Chat simulator</a>
+        <a href="#settings" data-route="settings">Settings</a>
+      </nav>
+      <div class="sidebar-foot">
+        <a href="/" target="_blank" rel="noopener">View storefront ↗</a>
+        <button id="logout" class="btn ghost block">Sign out</button>
+      </div>
+    </aside>
+    <main id="view" class="main"></main>
+  </div>
+
+  <!-- Generic modal -->
+  <dialog id="modal">
+    <form method="dialog" class="modal-close-row"><button class="btn ghost" value="close">✕</button></form>
+    <div id="modal-body"></div>
+  </dialog>
+
+  <div id="toast" class="toast hidden"></div>
+  <script src="/admin/admin.js"></script>
+</body>
+</html>

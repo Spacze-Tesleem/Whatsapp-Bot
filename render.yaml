@@ -1,0 +1,36 @@
+# Render Blueprint: creates the web service, its persistent disk and the environment.
+# Secrets are marked sync: false, so you enter them in the Render dashboard, not in this file.
+services:
+  - type: web
+    name: whatsapp-store
+    runtime: node
+    plan: starter            # persistent disks need a paid plan
+    region: frankfurt        # closest of Render's regions to Lagos
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /healthz
+    disk:
+      name: store-data
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: NODE_VERSION
+        value: 22.22.3
+      - key: NODE_ENV
+        value: production
+      - key: DB_FILE
+        value: /var/data/shop.db
+      - key: TRUST_PROXY
+        value: "true"
+      - key: SEED_DEMO
+        value: "false"
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: WHATSAPP_TOKEN
+        sync: false
+      - key: WHATSAPP_PHONE_NUMBER_ID
+        sync: false
+      - key: WHATSAPP_APP_SECRET
+        sync: false
+      - key: WHATSAPP_VERIFY_TOKEN
+        generateValue: true

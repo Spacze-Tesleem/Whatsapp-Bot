@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shop</title>
+  <link rel="stylesheet" href="/shop.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand" id="store-name">🛍️ Shop</div>
+    <button class="cart-btn" id="open-cart" type="button">🛒 Cart <span id="cart-count" class="count">0</span></button>
+  </header>
+
+  <section class="hero">
+    <h1>Shop online, pay and track on WhatsApp</h1>
+    <p id="welcome" class="muted"></p>
+    <div class="filters">
+      <input id="search" type="search" placeholder="Search products">
+      <div id="categories" class="chips"></div>
+    </div>
+  </section>
+
+  <main class="container">
+    <div id="products" class="grid"></div>
+
+    <section class="card track">
+      <h2>Track an order</h2>
+      <form id="track-form" class="row">
+        <input name="order_no" placeholder="Order no. e.g. ORD-1A2B3C" required>
+        <input name="phone" placeholder="WhatsApp number used" required>
+        <button class="btn" type="submit">Track</button>
+      </form>
+      <div id="track-result"></div>
+    </section>
+  </main>
+
+  <!-- Cart & checkout drawer -->
+  <div id="drawer-backdrop" class="backdrop hidden"></div>
+  <aside id="drawer" class="drawer hidden" aria-label="Cart">
+    <div class="drawer-head">
+      <h2>Your cart</h2>
+      <button class="btn ghost" id="close-cart" type="button">✕</button>
+    </div>
+    <div id="cart-items"></div>
+    <div class="cart-total"><span>Total</span><strong id="cart-total">₦0</strong></div>
+    <form id="checkout-form" class="checkout">
+      <h3>Delivery details</h3>
+      <label>Full name<input name="name" required autocomplete="name"></label>
+      <label>WhatsApp number<input name="phone" required placeholder="08012345678" autocomplete="tel"></label>
+      <label>Delivery address<textarea name="address" required rows="3" placeholder="Street, area, city"></textarea></label>
+      <p id="checkout-error" class="error"></p>
+      <button class="btn primary block" type="submit">Place order</button>
+    </form>
+    <div id="order-success" class="success hidden"></div>
+  </aside>
+
+  <div id="toast" class="toast hidden"></div>
+  <script src="/shop.js"></script>
+</body>
+</html>
